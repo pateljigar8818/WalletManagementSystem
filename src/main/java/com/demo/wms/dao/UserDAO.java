@@ -14,6 +14,8 @@ import com.demo.wms.dto.UserRole;
 public interface UserDAO extends PagingAndSortingRepository<User, Integer>, CrudRepository<User, Integer> {
 	
 	List<User> findAll();
+	
+	List<User> findUsersByUserRole(UserRole userRole);
 
 	User findUserByPhoneNum(String phoneNumber);
 	

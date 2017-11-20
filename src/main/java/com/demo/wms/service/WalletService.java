@@ -85,5 +85,19 @@ public class WalletService {
 		return statusUpdated;
 	}
 	
+	public boolean deleteWallet(String userId){
+		boolean statusUpdated=false;
+		if(StringUtils.isNotBlank(userId) && StringUtils.isNumeric(userId)){
+			User user=userService.findByUserId(userId);
+			Wallet wallet=null;
+			if(user!=null && (wallet=user.getWallet())!=null && !wallet.isDeleted()){
+				cardService.deleteCards(wallet.getCards());
+				wallet.setDeleted(true);
+				walletDao.save(wallet);
+				statusUpdated=true;
+			}
+		}
+		return statusUpdated;
+	}
 	
 }

@@ -51,7 +51,31 @@ public class AdminController {
 	@RequestMapping(value ="/activate/{userId}" , method=RequestMethod.GET)
 	public ModelAndView activateWalletUser(@PathVariable("userId")String userId){
 		ModelAndView model = new ModelAndView();
-		model.addObject("statusUpdated", walletService.changeStatusOfWallet(false, userId));
+		model.addObject("statusUpdated", walletService.changeStatusOfWallet(true, userId));
+		model.setViewName("forward:/admin/getAllUsers"); 
+		return model;
+	}
+	
+	@RequestMapping(value ="/deactivateUI/{userId}" , method=RequestMethod.GET)
+	public ModelAndView deactivateWalletUIUser(@PathVariable("userId")String userId){
+		ModelAndView model = new ModelAndView();
+		model.addObject("statusUpdated", walletService.changeStatusOfUIInterface(false, userId));
+		model.setViewName("forward:/admin/getAllUsers"); 
+		return model;
+	}
+	
+	@RequestMapping(value ="/activateUI/{userId}" , method=RequestMethod.GET)
+	public ModelAndView activateWalletUIUser(@PathVariable("userId")String userId){
+		ModelAndView model = new ModelAndView();
+		model.addObject("statusUpdated", walletService.changeStatusOfUIInterface(true, userId));
+		model.setViewName("forward:/admin/getAllUsers"); 
+		return model;
+	}
+	
+	@RequestMapping(value ="/delete/{userId}" , method=RequestMethod.GET)
+	public ModelAndView deleteUserWallet(@PathVariable("userId")String userId){
+		ModelAndView model = new ModelAndView();
+		model.addObject("statusUpdated", walletService.deleteWallet(userId));
 		model.setViewName("forward:/admin/getAllUsers"); 
 		return model;
 	}

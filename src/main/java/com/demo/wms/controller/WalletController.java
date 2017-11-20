@@ -1,9 +1,12 @@
 package com.demo.wms.controller;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
@@ -34,18 +37,22 @@ public class WalletController {
 	}
 	
 	@RequestMapping(value ="/wallet/createWallet", method = RequestMethod.POST)
-	public ModelAndView postCreateWallet(HttpServletRequest request,CardModel cardModel) {
+	public ModelAndView postCreateWallet(HttpServletRequest request,@Valid @ModelAttribute("card")CardModel cardModel,BindingResult bindingResult) {
 		ModelAndView model = new ModelAndView();
 		User user=null;
-		if((user=userService.checkUserExist(request.getUserPrincipal().getName()))!=null){
-			if(walletService.addCardToWallet(cardModel, user)){
-				model.setViewName("redirect:/user/landingPage"); 
+		if(!bindingResult.hasErrors()){
+			if((user=userService.checkUserExist(request.getUserPrincipal().getName()))!=null){
+				if(walletService.addCardToWallet(cardModel, user)){
+					model.setViewName("redirect:/user/landingPage"); 
+				}else{
+					model.addObject("message", "Wallet cannot be created");
+					model.setViewName("cardPage"); 
+				}
 			}else{
-				model.addObject("message", "Wallet cannot be created");
+				model.addObject("message", "User not found");
 				model.setViewName("cardPage"); 
 			}
 		}else{
-			model.addObject("message", "User not found");
 			model.setViewName("cardPage"); 
 		}
 		return model;

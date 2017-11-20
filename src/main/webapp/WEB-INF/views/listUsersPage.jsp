@@ -40,9 +40,30 @@ tr:nth-child(even) {
         <td>${user.email}</td>
         <c:choose>
         	<c:when test="${not empty user.wallet}">
-		        <td>${user.wallet.active} </td>
-		        <td>${user.wallet.webInterfaceActive}</td>
-		        <td>${user.wallet.deleted}</td>
+        		<c:choose>
+        			<c:when test="${user.wallet.active}">
+		        		<td><a href="${pageContext.request.contextPath}/admin/deactivate/${user.userId}">Deactivate</a> </td>
+        			</c:when>
+        			<c:otherwise>
+		        		<td><a href="${pageContext.request.contextPath}/admin/activate/${user.userId}">Activate</a> </td>
+        			</c:otherwise>
+        		</c:choose>
+        		<c:choose>
+        			<c:when test="${user.wallet.webInterfaceActive}">
+		        		<td><a href="${pageContext.request.contextPath}/admin/deactivateUI/${user.userId}">Deactivate</a> </td>
+        			</c:when>
+        			<c:otherwise>
+		        		<td><a href="${pageContext.request.contextPath}/admin/activateUI/${user.userId}">Activate</a> </td>
+        			</c:otherwise>
+        		</c:choose>
+        		<c:choose>
+        			<c:when test="${user.wallet.deleted}">
+		        		<td>Deleted</td>
+        			</c:when>
+        			<c:otherwise>
+		        		<td><a href="${pageContext.request.contextPath}/admin/delete/${user.userId}">Delete</a> </td>
+        			</c:otherwise>
+        		</c:choose>
         	</c:when>
         	<c:otherwise>
 		        <td>-</td>

@@ -42,6 +42,8 @@ public class UserService {
 		user.setEmail(registration.getEmail());
 		user.setShippingAddress(registration.getAddress());
 		user.setPhoneNum(registration.getPhoneNumber());
+		user.setFirstName(registration.getFirstName());
+		user.setLastName(registration.getLastName());
 		user.setActive(true);
 		user.setUserRole(userRoleDao.findByRoleDesc(WMSConstants.ROLE_USER));
 		user.setPassword(passwordEncoder.encode(registration.getPassword()));
@@ -50,7 +52,7 @@ public class UserService {
 	}
 	
 	public List<User> getAllUsers(){
-		return userDao.findAll();
+		return userDao.findUsersByUserRole(userRoleDao.findByRoleDesc(WMSConstants.ROLE_USER));
 	}
 	
 	public User findByUserId(String id){
@@ -60,7 +62,7 @@ public class UserService {
 	@PostConstruct
 	public void initialization(){
 		List<UserRole> roles=(List<UserRole>) userRoleDao.findAll();
-		if(roles.isEmpty()){
+		if(roles!=null && roles.isEmpty()){
 			UserRole userRole=new UserRole();
 			userRole.setRoleDesc(WMSConstants.ROLE_ADMIN);
 			userRoleDao.save(userRole);
@@ -70,8 +72,22 @@ public class UserService {
 			userRoleDao.save(userRole1);
 		}
 		
+		List<User> users= userDao.findUsersByUserRole(userRoleDao.findByRoleDesc(WMSConstants.ROLE_ADMIN));
+		if(users!=null && users.isEmpty()){
+			User user =new User();
+			user.setEmail("patel.jigar8818@gmail.com");
+			user.setShippingAddress("Ahmedabad");
+			user.setPhoneNum("9724505124");
+			user.setFirstName("Jigar");
+			user.setLastName("Patel");
+			user.setActive(true);
+			user.setUserRole(userRoleDao.findByRoleDesc(WMSConstants.ROLE_ADMIN));
+			user.setPassword(passwordEncoder.encode("abc123"));
+			userDao.save(user);
+		}
+		
 		List<CardType> cardTypes=(List<CardType>) cardTypeDao.findAll();
-		if(cardTypes.isEmpty()){
+		if(cardTypes!=null && cardTypes.isEmpty()){
 			CardTypeEnum[] cardTypeConstants=CardTypeEnum.VALUES;
 			for(CardTypeEnum cardType:cardTypeConstants){
 				CardType cardTypeObj=new CardType();
@@ -79,9 +95,6 @@ public class UserService {
 				cardTypeDao.save(cardTypeObj);
 			}
 		}
-		
-		
-		
 	}
 	
 
